@@ -11,7 +11,7 @@ export default function Form(){
     const [msgCalculo, setMsgCalculo] = useState(null)
     const [msgResultado, setMsgResultado] = useState(null)
     const [media, setMedia] = useState(null)
-    const [testButton, setTestButton] = useState("Calcular")
+    const [testButton, setTextButton] = useState("Calcular")
 
     function calcularMedia(mediaEtapa1Format, mediaEtapa2Format){
         let mediaFinal = (Number.parseFloat(mediaEtapa1Format) + Number.parseFloat(mediaEtapa2Format)) / 2;
@@ -35,39 +35,58 @@ export default function Form(){
             let mediaEtapa2Format = mediaEtapa2.replace(",",".");
             if(mediaEtapa1Format >= 0 && mediaEtapa1Format <= 10 && mediaEtapa2Format >= 0 && mediaEtapa2Format <= 10){
                 calcularMedia(mediaEtapa1Format, mediaEtapa2Format);
+                setMediaEtapa1(null);
+                setMediaEtapa2(null);
+                setTextButton("Calcular Novamente")
+                setMsgCalculo(null)
             }
             else{
                 setMsgCalculo("Valor Invalido!")
+                setMediaEtapa1(null)
+                setMediaEtapa2(null)
+                setTextButton("Calcular")
             }
         }else{
             setMsgCalculo("Preencha as medias das etapas!");
+            setMedia(null)
         }
     }
 
     return(
         <View style={styles.form}>
-            <Text>{msgCalculo}</Text>
-            <Text style={styles.label}>Média etapa 1</Text>
-            <TextInput 
-                style={styles.input}
-                keyboardType="numeric"
-                value={mediaEtapa1}
-                onChangeText={setMediaEtapa1}
-            />
+            { media == null ?
+            <View>
+                { msgCalculo != null && (
+                <Text style={styles.alerta}>{msgCalculo}</Text>
+            )}
+                <Text style={styles.label}>Média etapa 1</Text>
+                <TextInput 
+                    style={styles.input}
+                    keyboardType="numeric"
+                    value={mediaEtapa1}
+                    onChangeText={setMediaEtapa1}
+                />
 
-            <Text style={styles.label}>Média etapa 2</Text>
-            <TextInput 
-                style={styles.input}
-                keyboardType="numeric"
-                value={mediaEtapa2}
-                onChangeText={setMediaEtapa2}
-            />
+                <Text style={styles.label}>Média etapa 2</Text>
+                <TextInput 
+                    style={styles.input}
+                    keyboardType="numeric"
+                    value={mediaEtapa2}
+                    onChangeText={setMediaEtapa2}
+                />
 
-            <TouchableOpacity onPress={() => validacaoMedia()}>
-                <Text style={styles.button}>{testButton}</Text>
-            </TouchableOpacity>
-
-            <Result media={media} msgResultado={msgResultado}/>
+                <TouchableOpacity onPress={() => validacaoMedia()}>
+                    <Text style={styles.button}>{testButton}</Text>
+                </TouchableOpacity>
+                </View>
+            :
+            <View>
+                <Result media={media} msgResultado={msgResultado}/>
+                <TouchableOpacity onPress={() => validacaoMedia()}>
+                    <Text style={styles.button}>{testButton}</Text>
+                </TouchableOpacity>
+            </View>
+            }
         </View>
     );
 }
